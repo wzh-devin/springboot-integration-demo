@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: aws-s3
+  profiles:
+    active: dev
+
+aws:
+  s3:
+    access-key: ${aws.s3.access-key} # 用户AccessKey
+    secret-key: ${aws.s3.secret-key} # 用户SecretKey
+    region: ${aws.s3.region} # 地域
+    proxy: # 代理服务器配置，如果是在中国，并且开通的是国外S3服务，请配置代理服务器
+      host: ${aws.s3.proxy.host}
+      port: ${aws.s3.proxy.port}
+
+# swagger 配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.devin.s3.controller
