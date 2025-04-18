@@ -1,7 +1,7 @@
 ## 目录
 - [简介](#简介)
 - [集成技术](#集成技术)
-- [许可证](#许可证)
+- [许可证](https://github.com/wzh-devin/springboot-integration-demo/blob/master/LICENSE)
 
 ---
 
