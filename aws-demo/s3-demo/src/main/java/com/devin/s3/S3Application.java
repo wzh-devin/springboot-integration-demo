@@ -14,14 +14,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @Slf4j
 @SpringBootApplication
-public class Application {
+public class S3Application {
 
     /**
      * 主入口函数.
      * @param args 入口参数
      */
     public static void main(final String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(S3Application.class, args);
         log.info("======> S3 Application Started <======");
     }
 }
