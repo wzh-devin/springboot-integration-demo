@@ -25,7 +25,8 @@ import java.util.Objects;
  *
  * <p>
  *     对SaInterceptor进行更细化的重写<br>
- *     这里只是对拦截的路径新增了一个日志打印，如果有更精细化操作，也可以自定义重写
+ *     这里只是对拦截的路径新增了一个日志打印，以及Redis的缓存策略<br>
+ *     如果有更精细化操作，也可以自定义重写
  * </p>
  * @author <a href="https://github.com/wzh-devin">devin</a>
  * @version 1.0
