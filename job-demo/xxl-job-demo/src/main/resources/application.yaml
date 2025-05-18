@@ -1,0 +1,20 @@
+server:
+  port: 7980
+
+spring:
+  application:
+    name: xxl-job-demo
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/xxl_job?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: wzh7230610
+
+xxl-job:
+  admin:
+    address: http://localhost:8080/xxl-job-admin
+  executor:
+    app-name: xxl-job-demo
+    log-retention-days: 30
+    port: 7908
+  access-token: default_token
