@@ -1,7 +1,6 @@
 package com.devin.s3.domain.vo.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
 
 /**
@@ -18,13 +17,13 @@ public class BucketInfoReq {
     /**
      * 桶名.
      */
-    @SchemaProperty(name = "桶名")
+    @Schema(description = "桶名")
     private String name;
 
     /**
      * 桶的访问权限.
      * @see software.amazon.awssdk.services.s3.model.BucketCannedACL
      */
-    @SchemaProperty(name = "桶的访问权限")
+    @Schema(description = "桶的访问权限")
     private String acl;
 }

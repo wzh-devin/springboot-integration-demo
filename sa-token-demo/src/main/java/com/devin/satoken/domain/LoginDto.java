@@ -1,7 +1,6 @@
 package com.devin.satoken.domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
 
 /**
@@ -16,9 +15,9 @@ import lombok.Data;
 @Schema(description = "登录")
 public class LoginDto {
 
-    @SchemaProperty(name = "账号")
+    @Schema(description = "账号")
     private String username;
 
-    @SchemaProperty(name = "密码")
+    @Schema(description = "密码")
     private String password;
 }

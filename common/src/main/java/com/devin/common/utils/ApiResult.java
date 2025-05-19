@@ -1,7 +1,6 @@
 package com.devin.common.utils;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
 
 /**
@@ -20,25 +19,25 @@ public class ApiResult<T> {
     /**
      * 响应是否成功.
      */
-    @SchemaProperty(name = "响应是否成功")
+    @Schema(description = "响应是否成功")
     private Boolean success;
 
     /**
      * 失败码.
      */
-    @SchemaProperty(name = "失败码")
+    @Schema(description = "失败码")
     private Integer errCode;
 
     /**
      * 失败信息.
      */
-    @SchemaProperty(name = "失败信息")
+    @Schema(description = "失败信息")
     private String errMsg;
 
     /**
      * 响应数据.
      */
-    @SchemaProperty(name = "响应数据")
+    @Schema(description = "响应数据")
     private T data;
 
     /**
