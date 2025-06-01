@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: minio-demo
+
+minio:
+  endpoint: 127.0.0.1:9000
+  access-key: HR3WFeNJeAE4rvRN
+  secret-key: bd6gfBYYSzIqzWHyEssLAEKAmEPeU2nh
+
+# swagger 配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'minio'
+      paths-to-match: '/**'
+      packages-to-scan: com.devin.minio.controller

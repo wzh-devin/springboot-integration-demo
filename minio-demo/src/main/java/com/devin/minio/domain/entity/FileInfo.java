@@ -1,15 +1,13 @@
-package com.devin.s3.domain.eneity;
+package com.devin.minio.domain.entity;
 
 import lombok.Data;
-import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
-import java.time.Duration;
+import java.io.InputStream;
 
 /**
- * 2025/4/16 17:43.
+ * 2025/6/1 15:29.
  *
- * <p>
- *     文件信息
- * </p>
+ * <p></p>
+ *
  * @author <a href="https://github.com/wzh-devin">devin</a>
  * @version 1.0
  * @since 1.0
@@ -18,9 +16,9 @@ import java.time.Duration;
 public class FileInfo {
 
     /**
-     * 文件字节数组.
+     * 输入流.
      */
-    private byte[] fileBytes;
+    private InputStream inputStream;
 
     /**
      * 文件原始名.
@@ -43,11 +41,6 @@ public class FileInfo {
     private long size;
 
     /**
-     * 文件的访问权限. {@link ObjectCannedACL}
-     */
-    private String acl;
-
-    /**
      * 文件类型.
      */
     private String contentType;
@@ -61,5 +54,5 @@ public class FileInfo {
      * 文件访问的过期时间.<br>
      * <u>默认时间5分钟</u>
      */
-    private Duration expireTime = Duration.ofMinutes(5);
+    private Integer expireTime = 300;
 }
