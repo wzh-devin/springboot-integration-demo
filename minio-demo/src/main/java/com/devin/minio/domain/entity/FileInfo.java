@@ -2,7 +2,6 @@ package com.devin.minio.domain.entity;
 
 import lombok.Data;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * 2025/6/1 15:29.

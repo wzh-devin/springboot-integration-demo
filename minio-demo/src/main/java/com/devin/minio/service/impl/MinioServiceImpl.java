@@ -4,7 +4,6 @@ import cn.hutool.core.io.FileUtil;
 import com.devin.minio.common.utils.MinioTemplate;
 import com.devin.minio.domain.entity.FileInfo;
 import com.devin.minio.service.MinioService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
@@ -30,11 +29,9 @@ public class MinioServiceImpl implements MinioService {
 
     private final MinioTemplate minioTemplate;
 
-    private final HttpServletResponse response;
-
     @Override
     public String upload(final MultipartFile multipartFile) throws Exception {
-        String url = "";
+        String url;
         try (InputStream inputStream = multipartFile.getInputStream()) {
             String suffix = FileUtil.getSuffix(multipartFile.getOriginalFilename());
 
