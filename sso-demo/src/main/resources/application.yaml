@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  # 配置数据源
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/devin?currentSchema=other
+    username: devin
+    password: wzh7230610
+
+# mybatis-plus 配置
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+sso:
+  saml:
+    idp-url: http://localhost:14008
+    idp-entity-id: http://localhost:14008/login/saml/authorize/admin/Demo
+    entity-id: http://localhost:8080
+    acs-url: http://localhost:8080/sso/saml/callback
+  oauth2:
+    client-id: 410b171f1454f505bf7482e9f15d52c717b33e37f42d1d43a10c735e233b4989
+    client-secret: 5c0a1dc6784ca0b8f3f473c8ea8a35819b6cca21c6b34fcaa0695457bf49982f
+    redirect-url: http://localhost:8080/sso/oauth2/callback
+    home-url: http://localhost:8080
+    scope: user_info
+    idPUrl: http://localhost:14008/.well-known/openid-configuration
