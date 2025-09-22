@@ -22,6 +22,8 @@ public class SsoProperty {
 
     private OAuth2Property oauth2;
 
+    private AzureAdfsProperty azureAdfs;
+
     @Data
     public static class SamlProperty {
 
@@ -72,5 +74,63 @@ public class SsoProperty {
         private String tokenUri;
 
         private String jwkSetUri;
+    }
+
+    @Data
+    public static class AzureAdfsProperty {
+        /**
+         * Azure ADFS 租户 ID.
+         */
+        private String tenantId;
+        
+        /**
+         * Azure ADFS 应用程序（客户端）ID.
+         */
+        private String clientId;
+        
+        /**
+         * Azure ADFS 客户端密钥.
+         */
+        private String clientSecret;
+        
+        /**
+         * 重定向 URI.
+         */
+        private String redirectUri;
+        
+        /**
+         * 作用域.
+         */
+        private String scope = "openid profile email";
+        
+        /**
+         * Azure ADFS 实例 URL.
+         */
+        private String authority;
+        
+        /**
+         * 授权端点.
+         */
+        private String authorizationEndpoint;
+        
+        /**
+         * 令牌端点.
+         */
+        private String tokenEndpoint;
+        
+        /**
+         * JWK Set URI.
+         */
+        private String jwkSetUri;
+        
+        /**
+         * 发行者 URI.
+         */
+        private String issuer;
+        
+        /**
+         * 登录成功后的主页 URL.
+         */
+        private String homeUrl;
     }
 }

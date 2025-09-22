@@ -62,12 +62,14 @@ public class Oauth2ServiceImpl implements Oauth2Service {
         
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.setBasicAuth("410b171f1454f505bf7482e9f15d52c717b33e37f42d1d43a10c735e233b4989", "5c0a1dc6784ca0b8f3f473c8ea8a35819b6cca21c6b34fcaa0695457bf49982f");
+//        headers.setBasicAuth(oauth2Config.getClientId(), oauth2Config.getClientSecret());
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("code", code);
-        body.add("redirect_uri", "http://192.168.110.27:8080/sso/oauth/callback");
+        body.add("client_id", oauth2Config.getClientId());
+        body.add("client_secret", oauth2Config.getClientSecret());
+//        body.add("redirect_uri", oauth2Config.getRedirectUrl());
 
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
 
