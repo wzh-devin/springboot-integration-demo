@@ -12,7 +12,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since 1.0
  */
 @Data
-@ConfigurationProperties(prefix = "sso")
 public class SsoProperty {
 
     /**

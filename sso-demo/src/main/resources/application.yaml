@@ -17,9 +17,9 @@ mybatis-plus:
 
 sso:
   saml:
-    idp-url: http://localhost:14008
-    idp-entity-id: http://localhost:14008/login/saml/authorize/admin/Demo
-    entity-id: http://localhost:8080
+    idp-url: https://galaxy.capitaland.com/adfs/ls/
+    idp-entity-id: https://galaxy.capitaland.com/adfs/ls/
+    entity-id: http://localhost:8080/home
     acs-url: http://localhost:8080/sso/saml/callback
   oauth2:
     client-id: 410b171f1454f505bf7482e9f15d52c717b33e37f42d1d43a10c735e233b4989

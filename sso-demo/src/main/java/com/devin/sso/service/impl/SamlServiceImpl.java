@@ -64,38 +64,38 @@ import java.util.zip.DeflaterOutputStream;
 @Slf4j
 @Service
 //@RequiredArgsConstructor
-@EnableConfigurationProperties(SsoProperty.class)
 public class SamlServiceImpl implements SamlService {
 
-    private final SsoProperty.SamlProperty samlProperty;
+    private SsoProperty.SamlProperty samlProperty;
 
     private final UserService userService;
 
-    public SamlServiceImpl(final SsoProperty ssoProperty, final UserService userService) {
-        this.samlProperty = ssoProperty.getSaml();
+    public SamlServiceImpl(final UserService userService) {
+//        this.samlProperty = ssoProperty.getSaml();
         this.userService = userService;
     }
 
     @Override
     public String generateIdPLoginURL() {
         // 创建 AuthnRequest
-        AuthnRequest authnRequest = createAuthRequest();
+//        AuthnRequest authnRequest = createAuthRequest();
+//
+//        // 2. 将 AuthnRequest 对象转换为 XML 字符串
+//        String authnRequestXml = marshallObject(authnRequest);
+//
+//        // 3. 对 XML 字符串进行编码 (Deflate + Base64 + URL Encode)
+//        String encodedRequest = encodeSAMLRequest(authnRequestXml);
 
-        // 2. 将 AuthnRequest 对象转换为 XML 字符串
-        String authnRequestXml = marshallObject(authnRequest);
-
-        // 3. 对 XML 字符串进行编码 (Deflate + Base64 + URL Encode)
-        String encodedRequest = encodeSAMLRequest(authnRequestXml);
-
-        return samlProperty.getIdpEntityId() + "?SAMLRequest=" + encodedRequest;
+        return "https://galaxy.capitaland.com/adfs/ls/" + "?SAMLRequest=" + "nZLNbtswEIRfReBdokTFaULYBtwYRQykrRA7OeRSrMi1Q4AiWS6VOm9fWc5vgeTQGzGYwXyY5ZSgs0Eu%2BnTvrvF3j5Sy1XLGfrWi1oBtlVd1Xecnp1Wbn7Va5eXktNVnQp8LUbHsFiMZ72ZMFCXLVkQ9rhwlcGmQSjHJy%2FNciE1VyuqLnJwUoqzvWLYcWoyDNCbvUwokOd%2BBhf1joSCYNDydLpTvOOgtcUucZd98VDhyztgWLOGhrwEi84AvShN98srbr8Zp43Yz1kcnPZAh6aBDkknJ9eL7lRx4ZXs0kbzcbJq8%2BbnesGxBhPEAduEd9R3GNcYHo%2FDm%2BuoVNRpC6iH9A1sox1UHHEKwfmdcART2LNt31pEcd%2F6cJzzBs%2Fn04JbjnPFN%2FvM4PKOz%2Bf%2BATvmb0iNBkD%2BGltWy8daox8MFOkgfQ1RFNSpG59vRKntHAZXZGtTDtNb6PxcRIQ33SrEfzsXnx9b3H3D%2BFw%3D%3D";
     }
 
     @Override
     @SneakyThrows
     public User ssoLogin(final String samlResponse) {
         BasicX509Credential credential = new BasicX509Credential();
-        ClassPathResource resource = new ClassPathResource("token_jwt_key.pem");
-        try (InputStream byteArrayInputStream = resource.getInputStream()) {
+//        ClassPathResource resource = new ClassPathResource("token_jwt_key.pem");
+        // "MIIC5jCCAc6gAwIBAgIQeVg4yKGv24FOFG633m2YuTANBgkqhkiG9w0BAQsFADAvMS0wKwYDVQQDEyRBREZTIFNpZ25pbmcgLSBnYWxheHkuY2FwaXRhbGFuZC5jb20wHhcNMjEwMTIwMTMzNzMzWhcNMzEwMTE4MTMzNzMzWjAvMS0wKwYDVQQDEyRBREZTIFNpZ25pbmcgLSBnYWxheHkuY2FwaXRhbGFuZC5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDgddfKRjScmfbzaSwA9WUqqZjN0eRwyALol3xsPLFWELEZ0OJl9tNNCV0WqpacbJ6RBVtk44FYQcaMUly7nRqA8ymuLnwylQe4zUmICCrm3mVvnuQ6GoJayjTAoXNjijQiKXDFcHfyNQIpbq5ms1mKSZHWhC36JVtIh4rdAfpI/De26CTwYBzr3ebjBhvX7lRrT7k14I3pLBSR8kEpkxN7flxI6EQCTi7SnpbALVdId4OqAHqZbVedH0wCPKVNFh6Re4ZhBVrNaEkoWIPC+WbCPGGxn89hWRa27xrVC+zboapyTwg9xwqd10jWBZH6ZsEUDpP6KrVPX4Z322MN+qGTAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAM7q61H0n7NOAYHvtSQh6Xmyrz151u/MZeU79eWU9aHzmz8nG+qCCv6J2BknB6wY6Ir2hQ9XMSTOHUmf2nTTdJfuySfqWuf1KQkHQen8Lm/JXeyEYuxo4LjbTrtCtY0P3iL5JgjOkxphWceTpjCVT8oo85S+ZoVeqGg6Gb9qAvHDfiaKIkAEAp0HpKhp2tVPaFjdGfumdBZknWvsc37UJIpQp+Vh+2nojmeJdwz7XVEQgXPj3r1935S2IiuXOQxJ5txFB8IEskth4X3YsFzoPW6130we5ttKd3Br+0gwQ8oZD8B8/ZQ/dbREnHQpeEfDocMRjy3GKxHiE87jKounDoc="
+        try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Base64.getDecoder().decode("MIIC5jCCAc6gAwIBAgIQeVg4yKGv24FOFG633m2YuTANBgkqhkiG9w0BAQsFADAvMS0wKwYDVQQDEyRBREZTIFNpZ25pbmcgLSBnYWxheHkuY2FwaXRhbGFuZC5jb20wHhcNMjEwMTIwMTMzNzMzWhcNMzEwMTE4MTMzNzMzWjAvMS0wKwYDVQQDEyRBREZTIFNpZ25pbmcgLSBnYWxheHkuY2FwaXRhbGFuZC5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDgddfKRjScmfbzaSwA9WUqqZjN0eRwyALol3xsPLFWELEZ0OJl9tNNCV0WqpacbJ6RBVtk44FYQcaMUly7nRqA8ymuLnwylQe4zUmICCrm3mVvnuQ6GoJayjTAoXNjijQiKXDFcHfyNQIpbq5ms1mKSZHWhC36JVtIh4rdAfpI/De26CTwYBzr3ebjBhvX7lRrT7k14I3pLBSR8kEpkxN7flxI6EQCTi7SnpbALVdId4OqAHqZbVedH0wCPKVNFh6Re4ZhBVrNaEkoWIPC+WbCPGGxn89hWRa27xrVC+zboapyTwg9xwqd10jWBZH6ZsEUDpP6KrVPX4Z322MN+qGTAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAM7q61H0n7NOAYHvtSQh6Xmyrz151u/MZeU79eWU9aHzmz8nG+qCCv6J2BknB6wY6Ir2hQ9XMSTOHUmf2nTTdJfuySfqWuf1KQkHQen8Lm/JXeyEYuxo4LjbTrtCtY0P3iL5JgjOkxphWceTpjCVT8oo85S+ZoVeqGg6Gb9qAvHDfiaKIkAEAp0HpKhp2tVPaFjdGfumdBZknWvsc37UJIpQp+Vh+2nojmeJdwz7XVEQgXPj3r1935S2IiuXOQxJ5txFB8IEskth4X3YsFzoPW6130we5ttKd3Br+0gwQ8oZD8B8/ZQ/dbREnHQpeEfDocMRjy3GKxHiE87jKounDoc="))) {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
             X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(byteArrayInputStream);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");

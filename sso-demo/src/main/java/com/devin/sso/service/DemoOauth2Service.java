@@ -2,6 +2,7 @@ package com.devin.sso.service;
 
 import com.devin.sso.common.configuration.Oauth2Config;
 import com.devin.sso.entity.IdTokenClaims;
+import com.devin.sso.entity.User;
 
 /**
  * 2025/9/22 12:31.
@@ -14,4 +15,6 @@ import com.devin.sso.entity.IdTokenClaims;
  */
 public interface DemoOauth2Service {
     IdTokenClaims exchangeCodeForTokensOAuth2Style(String code, Oauth2Config oauth2Config);
+
+    User login(IdTokenClaims claims);
 }

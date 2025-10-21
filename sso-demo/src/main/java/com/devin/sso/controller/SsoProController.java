@@ -48,9 +48,16 @@ public class SsoProController {
 
     @PostConstruct
     public void init() {
+//        oauth2Config = Oauth2Config.builder()
+//                .clientId("410b171f1454f505bf7482e9f15d52c717b33e37f42d1d43a10c735e233b4989")
+//                .clientSecret("5c0a1dc6784ca0b8f3f473c8ea8a35819b6cca21c6b34fcaa0695457bf49982f")
+//                .redirectUri("http://localhost:8080/oauth2/callback")
+//                .discoveryUrl("http://localhost:14008/.well-known/openid-configuration")
+//                .build();
+
         oauth2Config = Oauth2Config.builder()
-                .clientId("410b171f1454f505bf7482e9f15d52c717b33e37f42d1d43a10c735e233b4989")
-                .clientSecret("5c0a1dc6784ca0b8f3f473c8ea8a35819b6cca21c6b34fcaa0695457bf49982f")
+                .clientId("077221ec-8c7e-4df8-b8d4-7b6354c18c11")
+//                .clientSecret("5c0a1dc6784ca0b8f3f473c8ea8a35819b6cca21c6b34fcaa0695457bf49982f")
                 .redirectUri("http://localhost:8080/oauth2/callback")
                 .discoveryUrl("http://localhost:14008/.well-known/openid-configuration")
                 .build();
@@ -75,7 +82,7 @@ public class SsoProController {
                 .queryParam("client_id", oauth2Config.getClientId())
                 .queryParam("response_type", "code")
                 .queryParam("redirect_uri", oauth2Config.getRedirectUri())
-                .queryParam("scope", "profile email")
+                .queryParam("scope", "User.Read Mail.Read")
                 .queryParam("state", generateState())
                 .queryParam("response_mode", "query")
                 .build()
@@ -95,6 +102,7 @@ public class SsoProController {
 //        SsoProperty.OAuth2Property oauth2Config = ssoProperty.getOauth2();
 
         IdTokenClaims claims = oauth2Service.exchangeCodeForTokensOAuth2Style(code, oauth2Config);
+        User user = oauth2Service.login(claims);
 
         // 交换并验证令牌
 //        IdTokenClaims claims = oauth2Service.exchangeCodeForTokensAndVerify(code);
