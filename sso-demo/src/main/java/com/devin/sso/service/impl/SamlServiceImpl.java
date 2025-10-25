@@ -1,10 +1,14 @@
 package com.devin.sso.service.impl;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.devin.sso.common.properties.SsoProperty;
 import com.devin.sso.entity.User;
 import com.devin.sso.service.SamlService;
 import com.devin.sso.service.UserService;
+import com.nimbusds.jose.shaded.gson.JsonObject;
+import io.swagger.v3.core.util.Json;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
@@ -13,8 +17,11 @@ import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.Attribute;
+import org.opensaml.saml2.core.AttributeStatement;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Issuer;
+import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.NameIDPolicy;
 import org.opensaml.saml2.core.NameIDType;
 import org.opensaml.saml2.core.Response;
@@ -34,6 +41,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
@@ -48,6 +56,11 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
@@ -67,6 +80,8 @@ import java.util.zip.DeflaterOutputStream;
 public class SamlServiceImpl implements SamlService {
 
     private SsoProperty.SamlProperty samlProperty;
+
+    private static final String samlConfig = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
 
     private final UserService userService;
 
@@ -125,30 +140,46 @@ public class SamlServiceImpl implements SamlService {
             SignatureValidator signatureValidator = new SignatureValidator(credential);
             // 签名验证失败会抛错
             signatureValidator.validate(signature);
+//            String ssoUserId = assertion.getSubject().getNameID().getValue();
 
-            String ssoUserId = assertion.getSubject().getNameID().getValue();
-            LambdaQueryWrapper queryWrapper = new LambdaQueryWrapper<User>()
-                    .eq(User::getSsoId, ssoUserId)
-                    .last("limit 1");
-            User user = userService.getOne(queryWrapper);
-            if (user != null) {
-                return user;
+            String attributeName = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
+
+            String ssoUserId = getSsoUserId(assertion);
+
+            try {
+                Marshaller marshaller = Configuration.getMarshallerFactory().getMarshaller(assertion);
+                Element element = marshaller.marshall(assertion);
+                StringWriter writer = new StringWriter();
+                XMLHelper.writeNode(element, writer);
+                String assertionXml = writer.toString();
+                log.info("Assertion XML:\n{}", assertionXml);
+            } catch (Exception e) {
+                log.error("Failed to serialize assertion to XML", e);
             }
 
-            // 初始化用户
-            user = new User();
-            user.setSsoId(ssoUserId);
-            user.setUsername(ssoUserId);
-            userService.save(user);
+//            LambdaQueryWrapper queryWrapper = new LambdaQueryWrapper<User>()
+//                    .eq(User::getSsoId, ssoUserId)
+//                    .last("limit 1");
+//            User user = userService.getOne(queryWrapper);
+//            if (user != null) {
+//                return user;
+//            }
+//
+//            // 初始化用户
+//            user = new User();
+//            user.setSsoId(ssoUserId);
+//            user.setUsername(ssoUserId);
+//            userService.save(user);
 
-            return user;
+            return new User();
         }
     }
 
     /**
      * 对 XML 签名进行编码.
+     *
      * @param authnRequestXml AuthnRequest XML
-     * @return  String
+     * @return String
      */
     @SneakyThrows
     private String encodeSAMLRequest(final String authnRequestXml) {
@@ -169,8 +200,9 @@ public class SamlServiceImpl implements SamlService {
 
     /**
      * 将 AuthnRequest 对象转换为 XML.
+     *
      * @param authnRequest AuthnRequest
-     * @return  String
+     * @return String
      */
     @SneakyThrows
     private String marshallObject(final AuthnRequest authnRequest) {
@@ -185,6 +217,7 @@ public class SamlServiceImpl implements SamlService {
 
     /**
      * 创建AuthnRequest.
+     *
      * @return AuthnRequest
      */
     private AuthnRequest createAuthRequest() {
@@ -212,6 +245,43 @@ public class SamlServiceImpl implements SamlService {
         authnRequest.setNameIDPolicy(nameIdPolicy);
 
         return authnRequest;
+    }
+
+    /**
+     * 获取SSO用户唯一ID.
+     *
+     * @param assertion SAML assertion
+     * @return ssoUserId
+     */
+    private String getSsoUserId(final Assertion assertion) {
+        NameID nameID = assertion.getSubject().getNameID();
+        // 判断nameID是否为空
+        if (Objects.nonNull(nameID)) {
+            return nameID.getValue();
+        }
+        // 从配置中AttributeStatement中获取唯一标识
+        checkAttributeName();
+        // 获取属性值的xml列表
+        XMLObject xmlObject = Optional.ofNullable(assertion.getAttributeStatements())
+                .stream()
+                .flatMap(Collection::stream)
+                .map(AttributeStatement::getAttributes)
+                .flatMap(Collection::stream)
+                .filter(attribute -> samlConfig.equals(attribute.getName()))
+                .map(Attribute::getAttributeValues)
+                .flatMap(Collection::stream)
+                .findFirst()
+                // 如果没有数据，则抛出异常信息
+                .orElseThrow(() -> new RuntimeException("sssss"));
+
+        return xmlObject.getDOM().getTextContent();
+    }
+
+    /**
+     * 检查属性名称是否配置.
+     */
+    private void checkAttributeName() {
+        String attributeName = samlConfig;
     }
 
 }
