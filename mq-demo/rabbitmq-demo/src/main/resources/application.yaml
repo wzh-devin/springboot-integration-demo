@@ -1,0 +1,35 @@
+server:
+  port: 8080
+
+spring:
+  # 设置RabbitMQ的连接信息
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    virtual-host: ${RABBITMQ_VIRTUAL_HOST}
+    listener:
+      simple:
+        prefetch: 1
+        retry:
+          enabled: false
+  # 配置 mail
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            trust: ${MAIL_HOST}
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            port: ${MAIL_PORT}
+          starttls:
+            enable: true
+            required: true
